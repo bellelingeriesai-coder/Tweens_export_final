@@ -345,4 +345,62 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    /* ===========================
+       CRAFTSMANSHIP VIDEO PLAYERS
+       =========================== */
+    const videoCards = document.querySelectorAll('.video-card');
+    videoCards.forEach(card => {
+        const video = card.querySelector('.showcase-video');
+        const playBtn = card.querySelector('.video-play-btn');
+        const playIcon = playBtn ? playBtn.querySelector('i') : null;
+        const videoWrap = card.querySelector('.video-wrap');
+
+        if (!video) return;
+
+        const updateUI = () => {
+            if (video.paused) {
+                if (videoWrap) videoWrap.classList.add('paused');
+                if (playIcon) {
+                    playIcon.className = 'fas fa-play';
+                }
+            } else {
+                if (videoWrap) videoWrap.classList.remove('paused');
+                if (playIcon) {
+                    playIcon.className = 'fas fa-pause';
+                }
+            }
+        };
+
+        // Sync UI on play/pause/playing events
+        video.addEventListener('play', updateUI);
+        video.addEventListener('pause', updateUI);
+        video.addEventListener('playing', updateUI);
+
+        // Initial sync
+        updateUI();
+
+        // Toggle action
+        const togglePlay = () => {
+            if (video.paused) {
+                video.play().catch(err => {
+                    console.log('Video play failed or interrupted:', err);
+                });
+            } else {
+                video.pause();
+            }
+        };
+
+        if (playBtn) {
+            playBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                togglePlay();
+            });
+        }
+
+        if (videoWrap) {
+            videoWrap.addEventListener('click', togglePlay);
+        }
+    });
+
 });
+
